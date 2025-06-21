@@ -27,7 +27,8 @@ type cryptoData struct {
 }
 
 // Encrypt encrypts the given data using AES encryption with a randomly generated key. The AES key is then encrypted
-// with the recipient's public RSA key. If nil or empty data is provided, it returns nil without error.
+// with the recipient's public RSA key. If data is nil or empty, nil is returned without error.
+// The additionalData parameter can be used to provide additional authenticated data (AAD) for the encryption process.
 func Encrypt(ctx context.Context, pKey *rsa.PublicKey, data, additionalData []byte) ([]byte, error) {
 	if pKey == nil {
 		return nil, fmt.Errorf("public key cannot be nil")
@@ -63,8 +64,8 @@ func Encrypt(ctx context.Context, pKey *rsa.PublicKey, data, additionalData []by
 }
 
 // Decrypt decrypts data that was encrypted with the Encrypt function. It uses the provided private RSA key to decrypt
-// the AES key, and then uses that AES key to decrypt the actual data. If nil or empty data is provided, it returns nil
-// without error.
+// the AES key, and then uses that AES key to decrypt the actual data. If data is nil or empty, nil is returned without
+// error. The additionalData parameter should match the one used during encryption for authenticated decryption.
 func Decrypt(ctx context.Context, pKey *rsa.PrivateKey, data, additionalData []byte) ([]byte, error) {
 	if pKey == nil {
 		return nil, fmt.Errorf("private key cannot be nil")
