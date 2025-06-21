@@ -28,7 +28,7 @@ type cryptoData struct {
 
 // Encrypt encrypts the given data using AES encryption with a randomly generated key. The AES key is then encrypted
 // with the recipient's public RSA key. If nil or empty data is provided, it returns nil without error.
-func Encrypt(ctx context.Context, pKey *rsa.PublicKey, data []byte) ([]byte, error) {
+func Encrypt(ctx context.Context, pKey *rsa.PublicKey, data, additionalData []byte) ([]byte, error) {
 	if pKey == nil {
 		return nil, fmt.Errorf("public key cannot be nil")
 	}
@@ -41,7 +41,7 @@ func Encrypt(ctx context.Context, pKey *rsa.PublicKey, data []byte) ([]byte, err
 		return nil, fmt.Errorf("failed to generate AES key: %w", err)
 	}
 
-	encryptedData, err := encryptData(aesKey, data)
+	encryptedData, err := encryptData(aesKey, data, additionalData)
 	if err != nil {
 		return nil, fmt.Errorf("failed to encrypt data: %w", err)
 	}
@@ -65,7 +65,7 @@ func Encrypt(ctx context.Context, pKey *rsa.PublicKey, data []byte) ([]byte, err
 // Decrypt decrypts data that was encrypted with the Encrypt function. It uses the provided private RSA key to decrypt
 // the AES key, and then uses that AES key to decrypt the actual data. If nil or empty data is provided, it returns nil
 // without error.
-func Decrypt(ctx context.Context, pKey *rsa.PrivateKey, data []byte) ([]byte, error) {
+func Decrypt(ctx context.Context, pKey *rsa.PrivateKey, data, additionalData []byte) ([]byte, error) {
 	if pKey == nil {
 		return nil, fmt.Errorf("private key cannot be nil")
 	}
@@ -83,7 +83,7 @@ func Decrypt(ctx context.Context, pKey *rsa.PrivateKey, data []byte) ([]byte, er
 		return nil, fmt.Errorf("failed to decrypt AES key: %w", err)
 	}
 
-	decryptedData, err := decryptData(aesKey, cryptoData.EncryptedData)
+	decryptedData, err := decryptData(aesKey, cryptoData.EncryptedData, additionalData)
 	if err != nil {
 		return nil, fmt.Errorf("failed to decrypt data: %w", err)
 	}
@@ -102,7 +102,7 @@ func generateAESKey() ([]byte, error) {
 	return aesKey, nil
 }
 
-func encryptData(aesKey []byte, data []byte) ([]byte, error) {
+func encryptData(aesKey []byte, data, additionalData []byte) ([]byte, error) {
 	block, err := aes.NewCipher(aesKey)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create AES cipher: %w", err)
@@ -113,7 +113,7 @@ func encryptData(aesKey []byte, data []byte) ([]byte, error) {
 		return nil, fmt.Errorf("failed to create GCM cipher: %w", err)
 	}
 
-	encryptedData := gcm.Seal(nil, nil, data, nil)
+	encryptedData := gcm.Seal(nil, nil, data, additionalData)
 
 	return encryptedData, nil
 }
@@ -134,7 +134,7 @@ func decryptAESKey(pKey *rsa.PrivateKey, encryptedKey []byte) ([]byte, error) {
 	return decryptedKey, nil
 }
 
-func decryptData(aesKey []byte, encryptedData []byte) ([]byte, error) {
+func decryptData(aesKey []byte, encryptedData, additionalData []byte) ([]byte, error) {
 	block, err := aes.NewCipher(aesKey)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create AES cipher: %w", err)
@@ -145,7 +145,7 @@ func decryptData(aesKey []byte, encryptedData []byte) ([]byte, error) {
 		return nil, fmt.Errorf("failed to create GCM cipher: %w", err)
 	}
 
-	data, err := gcm.Open(nil, nil, encryptedData, nil)
+	data, err := gcm.Open(nil, nil, encryptedData, additionalData)
 	if err != nil {
 		return nil, fmt.Errorf("failed to decrypt data: %w", err)
 	}
