@@ -1,0 +1,66 @@
+name: CI
+
+on:
+  push:
+
+env:
+  GO_VERSION: 1.24
+  GOLANGCI_LINT_VERSION: v2.1.6
+
+jobs:
+  lint-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v4
+
+      - name: lint commit messages
+        uses: opensource-nepal/commitlint@v1
+
+  lint-go:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v4
+
+      - name: setup go
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+
+      - name: lint go
+        uses: golangci/golangci-lint-action@v8
+        with:
+          version: ${{ env.GOLANGCI_LINT_VERSION }}
+
+  test-go:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v4
+
+      - name: setup go
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+
+      - name: test go
+        run: go test -v ./...
+
+  release:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    needs: [lint-commit, lint-go, test-go]
+    permissions:
+      contents: write
+      issues: write
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-tags: true
+
+      - name: semantic-release
+        uses: ahmadnassri/action-semantic-release@v2
+        with:
+          dry: true
