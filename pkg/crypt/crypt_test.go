@@ -59,7 +59,7 @@ func (s *CryptTestSuite) TestDecryptWithNilInputs() {
 	s.Require().Nil(data)
 
 	// Nil additional data when encrypted with additional data
-	data, err = crypt.Decrypt(s.T().Context(), pKey, encryptedData, nil)
+	_, err = crypt.Decrypt(s.T().Context(), pKey, encryptedData, nil)
 	s.Require().ErrorContains(err, "failed to decrypt data")
 
 	// Nil additional data when encrypted without additional data

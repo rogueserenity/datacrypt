@@ -1,0 +1,98 @@
+version: "2"
+linters:
+  enable:
+    - copyloopvar
+    - cyclop
+    - decorder
+    - dogsled
+    - errchkjson
+    - errorlint
+    - funcorder
+    - goconst
+    - gocritic
+    - godot
+    - godox
+    - gosec
+    - iface
+    - importas
+    - ireturn
+    - revive
+    - testifylint
+    - testpackage
+    - usetesting
+    - unconvert
+    - whitespace
+    - wrapcheck
+  settings:
+    errcheck:
+      exclude-functions:
+        - fmt.Fprintln
+        - fmt.Fprintf
+        - fmt.Fprint
+    revive:
+      enable-all-rules: true
+      rules:
+        - name: add-constant
+          disabled: true
+        - name: cognitive-complexity
+          disabled: true
+        - name: deep-exit
+          disabled: true
+        - name: empty-lines
+          disabled: true
+        - name: exported
+          arguments:
+            - sayRepetitiveInsteadOfStutters
+        - name: line-length-limit
+          arguments:
+            - 120
+        - name: unhandled-error
+          arguments:
+            - fmt.Print.*
+            - fmt.Fprint.*
+    testifylint:
+      enable-all: true
+  exclusions:
+    generated: lax
+    rules:
+      - path: (.+)\.go$
+        text: Error return value of .((os\.)?std(out|err)\..*|.*Close|.*Flush|os\.Remove(All)?|.*printf?|os\.(Un)?Setenv). is not checked
+      - path: (.+)\.go$
+        text: func name will be used as test\.Test.* by other packages, and that stutters; consider calling this
+      - path: (.+)\.go$
+        text: (possible misuse of unsafe.Pointer|should have signature)
+      - path: (.+)\.go$
+        text: ineffective break statement. Did you mean to break out of the outer loop
+      - path: (.+)\.go$
+        text: Use of unsafe calls should be audited
+      - path: (.+)\.go$
+        text: Subprocess launch(ed with variable|ing should be audited)
+      - path: (.+)\.go$
+        text: G104
+      - path: (.+)\.go$
+        text: (Expect directory permissions to be 0750 or less|Expect file permissions to be 0600 or less)
+      - path: (.+)\.go$
+        text: Potential file inclusion via variable
+      - path: (.+)_test\.go$
+        text: (Unhandled error in call to function)
+    paths:
+      - third_party$
+      - builtin$
+      - examples$
+issues:
+  max-issues-per-linter: 0
+  max-same-issues: 0
+formatters:
+  enable:
+    - gofmt
+    - goimports
+  settings:
+    goimports:
+      local-prefixes:
+        - github.com/rogueserenity/datacrypt
+  exclusions:
+    generated: lax
+    paths:
+      - third_party$
+      - builtin$
+      - examples$
