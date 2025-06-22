@@ -15,24 +15,24 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
 
       - name: lint commit messages
-        uses: opensource-nepal/commitlint@v1
+        uses: opensource-nepal/commitlint@02e7ff4f7f1e4b1f8e2955b114bfa9271f1c7c97
 
   lint-go:
     runs-on: ubuntu-latest
     steps:
       - name: checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
 
       - name: setup go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@d35c59abb061a4a6fb18e82ac0862c26744d6ab5
         with:
           go-version: ${{ env.GO_VERSION }}
 
       - name: lint go
-        uses: golangci/golangci-lint-action@v8
+        uses: golangci/golangci-lint-action@4afd733a84b1f43292c63897423277bb7f4313a9
         with:
           version: ${{ env.GOLANGCI_LINT_VERSION }}
 
@@ -40,10 +40,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
 
       - name: setup go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@d35c59abb061a4a6fb18e82ac0862c26744d6ab5
         with:
           go-version: ${{ env.GO_VERSION }}
 
@@ -59,11 +59,11 @@ jobs:
       issues: write
     steps:
       - name: checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           fetch-tags: true
 
       - name: semantic-release
-        uses: ahmadnassri/action-semantic-release@v2
+        uses: ahmadnassri/action-semantic-release@88650b63adac704a32125faac3983db32805210c
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
