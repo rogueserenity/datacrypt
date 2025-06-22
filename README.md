@@ -1,5 +1,7 @@
 # datacrypt
 
+[![Go Reference](https://pkg.go.dev/badge/github.com/rogueserenity/datacrypt.svg)](https://pkg.go.dev/github.com/rogueserenity/datacrypt)
+
 datacrypt is a simple golang library for encrypting and decrypting arbitrary
 data using RSA keys.
 
