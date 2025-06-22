@@ -20,7 +20,12 @@
     },
     "peacock.color": "#000042",
     "cSpell.words": [
+        "ahmadnassri",
+        "commitlint",
         "datacrypt",
+        "GOLANGCI",
+        "gomod",
+        "opensource",
         "rogueserenity",
         "stretchr"
     ]
