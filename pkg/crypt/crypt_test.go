@@ -122,7 +122,7 @@ func (s *CryptTestSuite) TestDecryptWithCorruptedEncryptedData() {
 
 	// Corrupt the encrypted data (not the AES key)
 	if len(cryptoData.EncryptedData) > 5 {
-		cryptoData.EncryptedData[5] = cryptoData.EncryptedData[5] ^ 0xFF
+		cryptoData.EncryptedData[5] ^= 0xFF
 	}
 
 	// Re-marshal and try to decrypt
@@ -152,7 +152,7 @@ func (s *CryptTestSuite) TestDecryptWithCorruptedAESKey() {
 
 	// Corrupt the AES key
 	if len(cryptoData.EncryptedAESKey) > 5 {
-		cryptoData.EncryptedAESKey[5] = cryptoData.EncryptedAESKey[5] ^ 0xFF
+		cryptoData.EncryptedAESKey[5] ^= 0xFF
 	}
 
 	// Re-marshal and try to decrypt
