@@ -12,10 +12,12 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"log"
 )
 
 const (
 	aesKeySize = 32 // AES-256
+	recommendedRSAKeySize = 2048
 )
 
 type cryptoData struct {
@@ -29,10 +31,20 @@ type cryptoData struct {
 // Encrypt encrypts data using AES-256 encryption with a randomly generated key. The AES key is then encrypted with the
 // recipient's public RSA key. If data is nil or empty, nil is returned without error. The additionalData parameter can
 // be used to provide additional authenticated data (AAD) for the encryption process.
+//
+// SECURITY WARNING: RSA keys smaller than 2048 bits are cryptographically weak and should not be used in production.
+// This function will log a warning for keys smaller than 2048 bits.
 func Encrypt(pKey *rsa.PublicKey, data, additionalData []byte) ([]byte, error) {
 	if pKey == nil {
 		return nil, errors.New("public key cannot be nil")
 	}
+	
+	// Log security warning for weak keys
+	if keySize := pKey.N.BitLen(); keySize < recommendedRSAKeySize {
+		log.Printf("SECURITY WARNING: Using RSA key with %d bits. Minimum recommended size is %d bits for production use.", 
+			   keySize, recommendedRSAKeySize)
+	}
+	
 	if len(data) == 0 {
 		return nil, nil
 	}
@@ -66,10 +78,20 @@ func Encrypt(pKey *rsa.PublicKey, data, additionalData []byte) ([]byte, error) {
 // Decrypt decrypts data that was encrypted with the Encrypt function. It uses the provided private RSA key to decrypt
 // the AES key, and then uses that AES key to decrypt data. If data is nil or empty, nil is returned without error. The
 // additionalData parameter should match the one used during encryption for authenticated decryption.
+//
+// SECURITY WARNING: RSA keys smaller than 2048 bits are cryptographically weak and should not be used in production.
+// This function will log a warning for keys smaller than 2048 bits.
 func Decrypt(pKey *rsa.PrivateKey, data, additionalData []byte) ([]byte, error) {
 	if pKey == nil {
 		return nil, errors.New("private key cannot be nil")
 	}
+	
+	// Log security warning for weak keys
+	if keySize := pKey.N.BitLen(); keySize < recommendedRSAKeySize {
+		log.Printf("SECURITY WARNING: Using RSA key with %d bits. Minimum recommended size is %d bits for production use.", 
+			   keySize, recommendedRSAKeySize)
+	}
+	
 	if len(data) == 0 {
 		return nil, nil
 	}
