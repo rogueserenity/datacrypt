@@ -16,7 +16,7 @@ import (
 )
 
 const (
-	aesKeySize = 32 // AES-256
+	aesKeySize            = 32 // AES-256
 	recommendedRSAKeySize = 2048
 )
 
@@ -38,13 +38,13 @@ func Encrypt(pKey *rsa.PublicKey, data, additionalData []byte) ([]byte, error) {
 	if pKey == nil {
 		return nil, errors.New("public key cannot be nil")
 	}
-	
+
 	// Log security warning for weak keys
 	if keySize := pKey.N.BitLen(); keySize < recommendedRSAKeySize {
-		log.Printf("SECURITY WARNING: Using RSA key with %d bits. Minimum recommended size is %d bits for production use.", 
-			   keySize, recommendedRSAKeySize)
+		log.Printf("SECURITY WARNING: Using RSA key with %d bits. Minimum recommended size is %d bits for production use.",
+			keySize, recommendedRSAKeySize)
 	}
-	
+
 	if len(data) == 0 {
 		return nil, nil
 	}
@@ -85,13 +85,13 @@ func Decrypt(pKey *rsa.PrivateKey, data, additionalData []byte) ([]byte, error) 
 	if pKey == nil {
 		return nil, errors.New("private key cannot be nil")
 	}
-	
+
 	// Log security warning for weak keys
 	if keySize := pKey.N.BitLen(); keySize < recommendedRSAKeySize {
-		log.Printf("SECURITY WARNING: Using RSA key with %d bits. Minimum recommended size is %d bits for production use.", 
-			   keySize, recommendedRSAKeySize)
+		log.Printf("SECURITY WARNING: Using RSA key with %d bits. Minimum recommended size is %d bits for production use.",
+			keySize, recommendedRSAKeySize)
 	}
-	
+
 	if len(data) == 0 {
 		return nil, nil
 	}
