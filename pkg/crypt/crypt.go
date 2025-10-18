@@ -1,6 +1,7 @@
 // Package crypt provides functions to encrypt and decrypt data using AES encryption with RSA key exchange.
 // It uses AES-256 for symmetric encryption and RSA for asymmetric encryption.
-// The AES key is randomly generated for each encryption operation and is encrypted with the recipient's public RSA key.
+// The AES key is randomly generated for each encryption operation and is encrypted with the
+// recipient's public RSA key.
 package crypt
 
 import (
@@ -28,12 +29,12 @@ type cryptoData struct {
 	EncryptedData []byte
 }
 
-// Encrypt encrypts data using AES-256 encryption with a randomly generated key. The AES key is then encrypted with the
-// recipient's public RSA key. If data is nil or empty, nil is returned without error. The additionalData parameter can
-// be used to provide additional authenticated data (AAD) for the encryption process.
+// Encrypt encrypts data using AES-256 encryption with a randomly generated key. The AES key is then encrypted
+// with the recipient's public RSA key. If data is nil or empty, nil is returned without error. The additionalData
+// parameter can be used to provide additional authenticated data (AAD) for the encryption process.
 //
-// SECURITY WARNING: RSA keys smaller than 2048 bits are cryptographically weak and should not be used in production.
-// This function will log a warning for keys smaller than 2048 bits.
+// SECURITY WARNING: RSA keys smaller than 2048 bits are cryptographically weak and should not be used in
+// production. This function will log a warning for keys smaller than 2048 bits.
 func Encrypt(pKey *rsa.PublicKey, data, additionalData []byte) ([]byte, error) {
 	if pKey == nil {
 		return nil, errors.New("public key cannot be nil")
@@ -41,8 +42,8 @@ func Encrypt(pKey *rsa.PublicKey, data, additionalData []byte) ([]byte, error) {
 
 	// Log security warning for weak keys
 	if keySize := pKey.N.BitLen(); keySize < recommendedRSAKeySize {
-		log.Printf("SECURITY WARNING: Using RSA key with %d bits. Minimum recommended size is %d bits for production use.",
-			keySize, recommendedRSAKeySize)
+		log.Printf("SECURITY WARNING: Using RSA key with %d bits. Minimum recommended size is %d bits for "+
+			"production use.", keySize, recommendedRSAKeySize)
 	}
 
 	if len(data) == 0 {
@@ -75,12 +76,12 @@ func Encrypt(pKey *rsa.PublicKey, data, additionalData []byte) ([]byte, error) {
 	return jsonData, nil
 }
 
-// Decrypt decrypts data that was encrypted with the Encrypt function. It uses the provided private RSA key to decrypt
-// the AES key, and then uses that AES key to decrypt data. If data is nil or empty, nil is returned without error. The
-// additionalData parameter should match the one used during encryption for authenticated decryption.
+// Decrypt decrypts data that was encrypted with the Encrypt function. It uses the provided private RSA key to
+// decrypt the AES key, and then uses that AES key to decrypt data. If data is nil or empty, nil is returned without
+// error. The additionalData parameter should match the one used during encryption for authenticated decryption.
 //
-// SECURITY WARNING: RSA keys smaller than 2048 bits are cryptographically weak and should not be used in production.
-// This function will log a warning for keys smaller than 2048 bits.
+// SECURITY WARNING: RSA keys smaller than 2048 bits are cryptographically weak and should not be used in
+// production. This function will log a warning for keys smaller than 2048 bits.
 func Decrypt(pKey *rsa.PrivateKey, data, additionalData []byte) ([]byte, error) {
 	if pKey == nil {
 		return nil, errors.New("private key cannot be nil")
@@ -88,8 +89,8 @@ func Decrypt(pKey *rsa.PrivateKey, data, additionalData []byte) ([]byte, error) 
 
 	// Log security warning for weak keys
 	if keySize := pKey.N.BitLen(); keySize < recommendedRSAKeySize {
-		log.Printf("SECURITY WARNING: Using RSA key with %d bits. Minimum recommended size is %d bits for production use.",
-			keySize, recommendedRSAKeySize)
+		log.Printf("SECURITY WARNING: Using RSA key with %d bits. Minimum recommended size is %d bits for "+
+			"production use.", keySize, recommendedRSAKeySize)
 	}
 
 	if len(data) == 0 {
@@ -120,7 +121,8 @@ func generateAESKey() ([]byte, error) {
 		return nil, fmt.Errorf("failed to generate random AES key: %w", err)
 	}
 	if n != aesKeySize {
-		return nil, fmt.Errorf("unexpected number of bytes read for AES key: got %d, want %d", n, aesKeySize)
+		return nil, fmt.Errorf("unexpected number of bytes read for AES key: got %d, want %d",
+			n, aesKeySize)
 	}
 	return aesKey, nil
 }
