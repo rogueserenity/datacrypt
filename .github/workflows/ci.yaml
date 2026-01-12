@@ -18,7 +18,7 @@ jobs:
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
 
       - name: lint commit messages
-        uses: opensource-nepal/commitlint@7d5177478584fa182b04a4a64d1b1b257b474cd2
+        uses: opensource-nepal/commitlint@b475c5486b51a090474c55a8dd2eafc84bcd84ba
 
   lint-go:
     runs-on: ubuntu-latest
